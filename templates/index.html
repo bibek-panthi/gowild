@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoWild Flight Finder ✈️</title>
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <!-- Select2 CSS for searchable dropdowns -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <!-- Flatpickr CSS for date range picker -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <!-- Custom CSS -->
     <style>
         :root {
             --primary-color: #2E7D32;
@@ -120,21 +125,12 @@
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
-        /* Date Range Picker Styles */
-        .date-range-container {
-            position: relative;
-        }
-
-        .date-range-input {
-            cursor: pointer;
-        }
-
-        /* Filter Panel Styles */
-        .filters-panel {
+        /* Filter Section Styles */
+        .filters-card {
             background: rgba(255, 255, 255, 0.9);
             border-radius: 15px;
             padding: 1.5rem;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             display: none;
         }
 
@@ -149,31 +145,147 @@
         .filter-label {
             font-weight: 600;
             color: var(--primary-color);
+            font-size: 0.9rem;
             margin-bottom: 0.5rem;
+        }
+
+        .filter-control {
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            padding: 0.5rem;
             font-size: 0.9rem;
         }
 
-        .filter-range {
-            display: flex;
-            align-items: center;
+        .filter-section-title {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .filter-buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
             gap: 0.5rem;
         }
 
-        .filter-range input {
-            flex: 1;
+        .filter-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
         }
 
-        .filter-toggle-btn {
+        .filter-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--primary-color);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .filter-btn.active {
             background: var(--secondary-color);
+            border-color: var(--secondary-color);
             color: white;
+        }
+
+        .stops-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+
+        .stops-btn {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.5rem 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .stops-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--primary-color);
+            background: rgba(76, 175, 80, 0.05);
+        }
+
+        .stops-btn.active {
+            background: var(--secondary-color);
+            border-color: var(--secondary-color);
+            color: white;
+        }
+
+        .price-display {
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1rem;
+        }
+
+        .search-input {
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .search-input:focus {
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25);
+        }
+
+        .btn-apply-filters, .btn-reset-filters {
+            width: 100%;
             border: none;
             border-radius: 8px;
-            padding: 0.5rem 1rem;
+            padding: 0.75rem 1rem;
             font-size: 0.9rem;
-            margin-bottom: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            justify-content: center;
+            margin-bottom: 0.5rem;
         }
 
-        /* Results Styles */
+        .btn-apply-filters {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: white;
+        }
+
+        .btn-apply-filters:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(46, 125, 50, 0.3);
+        }
+
+        .btn-reset-filters {
+            background: #f8f9fa;
+            color: #666;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-reset-filters:hover {
+            background: #e9ecef;
+            color: var(--primary-color);
+            border-color: var(--secondary-color);
+        }
+
         .results-container {
             display: none;
         }
@@ -191,10 +303,6 @@
         .flight-card:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-
-        .flight-card.hidden {
-            display: none;
         }
 
         .destination-header {
@@ -270,42 +378,21 @@
             border-color: var(--secondary-color);
         }
 
-        .select2-dropdown {
-            border-radius: 10px;
-            border: 2px solid var(--secondary-color);
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            padding-left: 12px;
+            padding-top: 8px;
         }
 
-        /* Sort Controls */
-        .sort-controls {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
+        /* Flatpickr customization */
+        .flatpickr-input {
+            border-radius: 10px !important;
+            border: 2px solid #e0e0e0 !important;
+            padding: 0.75rem !important;
         }
 
-        .sort-btn {
-            background: #f8f9fa;
-            border: 1px solid #dee2e6;
-            border-radius: 8px;
-            padding: 0.5rem 1rem;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .sort-btn.active {
-            background: var(--secondary-color);
-            color: white;
-            border-color: var(--secondary-color);
-        }
-
-        .results-summary {
-            background: rgba(255, 255, 255, 0.9);
-            border-radius: 10px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            text-align: center;
+        .flatpickr-input:focus {
+            border-color: var(--secondary-color) !important;
+            box-shadow: 0 0 0 0.2rem rgba(76, 175, 80, 0.25) !important;
         }
 
         @media (max-width: 768px) {
@@ -321,14 +408,18 @@
                 font-size: 2rem;
             }
 
-            .sort-controls {
-                justify-content: center;
+            .filters-card {
+                padding: 1rem;
             }
+        }
 
-            .filter-range {
-                flex-direction: column;
-                align-items: stretch;
-            }
+        /* Hide/show elements based on filter state */
+        .flight-card.hidden {
+            display: none;
+        }
+
+        .destination-section.hidden {
+            display: none;
         }
     </style>
 </head>
@@ -370,12 +461,9 @@
                     <!-- Date Range -->
                     <div class="col-md-6 mb-3">
                         <label for="dateRange" class="form-label">
-                            <i class="fas fa-calendar-alt"></i> Travel Dates
+                            <i class="fas fa-calendar-alt"></i> Travel Dates (select range)
                         </label>
-                        <div class="date-range-container">
-                            <input type="text" class="form-control date-range-input" id="dateRange" placeholder="Select date range..." required>
-                        </div>
-                        <small class="text-muted">Select single date or date range</small>
+                        <input type="text" class="form-control" id="dateRange" placeholder="Select date range..." required>
                     </div>
                 </div>
 
@@ -442,99 +530,93 @@
                 </div>
             </div>
 
+            <!-- Filter Controls -->
+            <div class="filters-card" id="filtersCard">
+                <h5 class="mb-4"><i class="fas fa-filter"></i> Filter & Sort Results</h5>
+                
+                <!-- Sort Options -->
+                <div class="mb-4">
+                    <h6 class="filter-section-title mb-3">Sort By</h6>
+                    <div class="filter-buttons-grid">
+                        <button class="filter-btn active" data-sort="price-asc">
+                            <i class="fas fa-sort-amount-up"></i> Price Low → High
+                        </button>
+                        <button class="filter-btn" data-sort="price-desc">
+                            <i class="fas fa-sort-amount-down"></i> Price High → Low
+                        </button>
+                        <button class="filter-btn" data-sort="duration-asc">
+                            <i class="fas fa-clock"></i> Shortest Duration
+                        </button>
+                        <button class="filter-btn" data-sort="duration-desc">
+                            <i class="fas fa-hourglass-end"></i> Longest Duration
+                        </button>
+                        <button class="filter-btn" data-sort="stops-asc">
+                            <i class="fas fa-route"></i> Fewest Stops
+                        </button>
+                        <button class="filter-btn" data-sort="destination">
+                            <i class="fas fa-sort-alpha-down"></i> Destination A-Z
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Filter Options -->
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="filter-group">
+                            <h6 class="filter-section-title mb-3">Max Price</h6>
+                            <input type="range" class="form-range filter-control" id="priceRange" min="0" max="1000" value="1000">
+                            <div class="text-center mt-2">
+                                <span class="price-display">Up to $<span id="priceValue">1000</span></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="filter-group">
+                            <h6 class="filter-section-title mb-3">Max Stops</h6>
+                            <div class="stops-buttons">
+                                <button class="stops-btn active" data-stops="all">
+                                    <i class="fas fa-infinity"></i> Any Stops
+                                </button>
+                                <button class="stops-btn" data-stops="0">
+                                    <i class="fas fa-arrow-right"></i> Direct Only
+                                </button>
+                                <button class="stops-btn" data-stops="1">
+                                    <i class="fas fa-exchange-alt"></i> Max 1 Stop
+                                </button>
+                                <button class="stops-btn" data-stops="2">
+                                    <i class="fas fa-project-diagram"></i> Max 2 Stops
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="filter-group">
+                            <h6 class="filter-section-title mb-3">Search Destinations</h6>
+                            <input type="text" class="form-control filter-control search-input" id="destinationSearch" placeholder="Type to search destinations...">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="filter-group">
+                            <h6 class="filter-section-title mb-3">Apply Changes</h6>
+                            <button class="btn-apply-filters" id="applyFiltersBtn">
+                                <i class="fas fa-magic"></i> Apply Filters
+                            </button>
+                            <button class="btn-reset-filters" id="resetFiltersBtn">
+                                <i class="fas fa-undo"></i> Reset All
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Results Header -->
             <div class="search-card">
-                <h3 id="resultsHeader" class="text-center mb-3">
+                <h3 id="resultsHeader" class="text-center mb-0">
                     <i class="fas fa-plane text-success"></i> Your GoWild Flight Options
                 </h3>
-                
-                <!-- Filter Toggle -->
-                <div class="text-center">
-                    <button type="button" class="filter-toggle-btn" id="filterToggle">
-                        <i class="fas fa-filter"></i> Show Filters & Sort Options
-                    </button>
+                <div class="text-center mt-2">
+                    <small class="text-muted" id="resultsCount">Showing all results</small>
                 </div>
-            </div>
-
-            <!-- Filters Panel -->
-            <div class="filters-panel" id="filtersPanel">
-                <div class="row">
-                    <!-- Price Filter -->
-                    <div class="col-md-3">
-                        <div class="filter-group">
-                            <div class="filter-label">
-                                <i class="fas fa-dollar-sign"></i> Price Range
-                            </div>
-                            <div class="filter-range">
-                                <input type="number" class="form-control form-control-sm" id="minPrice" placeholder="Min $">
-                                <span>-</span>
-                                <input type="number" class="form-control form-control-sm" id="maxPrice" placeholder="Max $">
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Duration Filter -->
-                    <div class="col-md-3">
-                        <div class="filter-group">
-                            <div class="filter-label">
-                                <i class="fas fa-clock"></i> Max Duration (hours)
-                            </div>
-                            <input type="number" class="form-control form-control-sm" id="maxDuration" placeholder="e.g. 8">
-                        </div>
-                    </div>
-
-                    <!-- Stops Filter -->
-                    <div class="col-md-3">
-                        <div class="filter-group">
-                            <div class="filter-label">
-                                <i class="fas fa-exchange-alt"></i> Stops
-                            </div>
-                            <select class="form-select form-select-sm" id="stopsFilter">
-                                <option value="">Any</option>
-                                <option value="nonstop">Non-stop only</option>
-                                <option value="1stop">1 stop max</option>
-                                <option value="2stops">2 stops max</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Destination Filter -->
-                    <div class="col-md-3">
-                        <div class="filter-group">
-                            <div class="filter-label">
-                                <i class="fas fa-search"></i> Search Destination
-                            </div>
-                            <input type="text" class="form-control form-control-sm" id="destinationSearch" placeholder="e.g. ATL, Atlanta">
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Sort Controls -->
-                <div class="sort-controls">
-                    <span class="filter-label">
-                        <i class="fas fa-sort"></i> Sort by:
-                    </span>
-                    <button class="sort-btn active" data-sort="price-asc">Price (Low to High)</button>
-                    <button class="sort-btn" data-sort="price-desc">Price (High to Low)</button>
-                    <button class="sort-btn" data-sort="duration-asc">Duration (Short to Long)</button>
-                    <button class="sort-btn" data-sort="departure-asc">Departure Time</button>
-                    <button class="sort-btn" data-sort="destination">Destination</button>
-                </div>
-
-                <!-- Apply Filters Button -->
-                <div class="text-center">
-                    <button type="button" class="btn btn-primary btn-sm" id="applyFilters">
-                        <i class="fas fa-filter"></i> Apply Filters
-                    </button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm ms-2" id="clearFilters">
-                        <i class="fas fa-times"></i> Clear All
-                    </button>
-                </div>
-            </div>
-
-            <!-- Results Summary -->
-            <div class="results-summary" id="resultsSummary" style="display: none;">
-                <span id="visibleResults">0</span> of <span id="totalResults">0</span> flights shown
             </div>
 
             <!-- Flight Results -->
@@ -555,30 +637,43 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     
+    <!-- Airport data for JavaScript -->
     <script>
-        let allFlights = [];
-        let filteredFlights = [];
-        let currentSort = 'price-asc';
+        window.airportNames = {
+            {% for code, name in airports.items() %}
+            '{{ code }}': '{{ name }}',
+            {% endfor %}
+        };
+    </script>
+    
+    <script>
+        let allResults = []; // Store all search results for filtering
+        let flatpickrInstance = null;
 
         $(document).ready(function() {
-            // Initialize Select2 for all selects
+            // Initialize Select2 for searchable dropdowns
             $('#origin').select2({
-                placeholder: "Search for departure airport...",
-                allowClear: true
+                placeholder: "Type to search airports...",
+                allowClear: true,
+                width: '100%'
             });
 
             $('#destinations').select2({
-                placeholder: "Search for destination airports...",
-                allowClear: true
+                placeholder: "Type to search destination airports...",
+                allowClear: true,
+                width: '100%'
             });
 
-            // Initialize Flatpickr for date range
-            flatpickr("#dateRange", {
+            // Initialize Flatpickr for date range selection
+            flatpickrInstance = flatpickr("#dateRange", {
                 mode: "range",
                 dateFormat: "Y-m-d",
                 minDate: "today",
                 maxDate: new Date().fp_incr(365), // 1 year from now
-                defaultDate: [new Date().fp_incr(1), new Date().fp_incr(1)] // Tomorrow by default
+                defaultDate: [
+                    new Date().fp_incr(1), // Tomorrow
+                    new Date().fp_incr(2)  // Day after tomorrow
+                ]
             });
 
             // Search type tabs
@@ -596,39 +691,34 @@
                 }
             });
 
-            // Filter toggle
-            $('#filterToggle').click(function() {
-                $('#filtersPanel').toggle();
-                const isVisible = $('#filtersPanel').is(':visible');
-                $(this).html(isVisible ? 
-                    '<i class="fas fa-filter"></i> Hide Filters & Sort Options' : 
-                    '<i class="fas fa-filter"></i> Show Filters & Sort Options'
-                );
-            });
-
-            // Sort buttons
-            $('.sort-btn').click(function() {
-                $('.sort-btn').removeClass('active');
+            // Filter event handlers - NO automatic filtering, only visual selection
+            $(document).on('click', '.filter-btn', function() {
+                $('.filter-btn').removeClass('active');
                 $(this).addClass('active');
-                currentSort = $(this).data('sort');
-                sortAndFilterFlights();
+                console.log('Sort button selected:', $(this).data('sort'));
             });
 
-            // Apply filters
-            $('#applyFilters').click(function() {
-                sortAndFilterFlights();
+            $(document).on('click', '.stops-btn', function() {
+                $('.stops-btn').removeClass('active');
+                $(this).addClass('active');
+                console.log('Stops button selected:', $(this).data('stops'));
             });
 
-            // Clear filters
-            $('#clearFilters').click(function() {
-                $('#minPrice, #maxPrice, #maxDuration, #destinationSearch').val('');
-                $('#stopsFilter').val('');
-                sortAndFilterFlights();
+            $('#priceRange').on('input', function() {
+                $('#priceValue').text($(this).val());
+                // No automatic filtering - just update display
             });
 
-            // Real-time destination search
-            $('#destinationSearch').on('input', function() {
-                sortAndFilterFlights();
+            // Apply Filters button - this is where the magic happens!
+            $(document).on('click', '#applyFiltersBtn', function() {
+                console.log('Applying filters now!');
+                applyFilters();
+            });
+
+            // Reset Filters button
+            $(document).on('click', '#resetFiltersBtn', function() {
+                console.log('Resetting filters');
+                resetFilters();
             });
 
             // Form submission
@@ -666,30 +756,66 @@
                 $('.loading-spinner').show();
                 $('html, body').animate({ scrollTop: $('.loading-spinner').offset().top - 100 }, 500);
 
-                // Prepare request data
-                const requestData = {
-                    origin: origin,
-                    startDate: startDate,
-                    endDate: endDate,
-                    searchType: searchType === 'discover' ? 'all_domestic' : 'specific',
-                    destinations: destinations
-                };
+                // Make requests for each date in the range
+                const dateList = getDateRange(startDate, endDate);
+                let allPromises = [];
 
-                // Make API request
-                $.ajax({
-                    url: '/api/search',
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(requestData),
-                    success: function(response) {
-                        $('.loading-spinner').hide();
-                        displayResults(response);
-                    },
-                    error: function(xhr, status, error) {
-                        $('.loading-spinner').hide();
-                        alert('Error searching flights: ' + error);
-                    }
+                dateList.forEach(date => {
+                    const requestData = {
+                        origin: origin,
+                        date: date,
+                        searchType: searchType === 'discover' ? 'all_domestic' : 'specific',
+                        destinations: destinations
+                    };
+
+                    const promise = $.ajax({
+                        url: '/api/search',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(requestData)
+                    });
+
+                    allPromises.push(promise);
                 });
+
+                // Wait for all requests to complete
+                Promise.all(allPromises).then(function(responses) {
+                    $('.loading-spinner').hide();
+                    
+                    // Combine all results
+                    let combinedResults = [];
+                    responses.forEach((response, index) => {
+                        if (response.success && response.results) {
+                            response.results.forEach(result => {
+                                result.searchDate = dateList[index];
+                                combinedResults.push(result);
+                            });
+                        }
+                    });
+
+                    displayResults({
+                        success: true,
+                        results: combinedResults,
+                        origin: origin,
+                        origin_name: responses[0]?.origin_name || origin,
+                        dateRange: `${startDate} to ${endDate}`
+                    });
+                }).catch(function(error) {
+                    $('.loading-spinner').hide();
+                    alert('Error searching flights: ' + error.responseJSON?.error || error.statusText);
+                });
+            }
+
+            function getDateRange(startDate, endDate) {
+                const dates = [];
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                
+                for (let date = new Date(start); date <= end; date.setDate(date.getDate() + 1)) {
+                    dates.push(date.toISOString().split('T')[0]);
+                }
+                
+                return dates;
             }
 
             function displayResults(response) {
@@ -698,162 +824,166 @@
                     return;
                 }
 
-                allFlights = [];
-                const results = response.results;
+                allResults = response.results || [];
                 
-                if (results.length === 0) {
+                if (allResults.length === 0) {
                     $('#noResults').show();
                     $('.results-container').show();
                     return;
                 }
 
-                // Flatten all flights for filtering/sorting
-                results.forEach(result => {
+                // Show filters
+                $('#filtersCard').show();
+
+                // Calculate stats
+                let totalFlights = 0;
+                let lowestPrice = Infinity;
+                let totalPrice = 0;
+                let priceCount = 0;
+                let maxPrice = 0;
+                
+                allResults.forEach(result => {
                     result.flights.forEach(flight => {
-                        allFlights.push({
-                            ...flight,
-                            destination: result.destination,
-                            destination_name: result.destination_name,
-                            origin_name: response.origin_name
-                        });
+                        totalFlights++;
+                        const price = parseFloat(flight.price) || 0;
+                        if (price > 0) {
+                            if (price < lowestPrice) lowestPrice = price;
+                            if (price > maxPrice) maxPrice = price;
+                            totalPrice += price;
+                            priceCount++;
+                        }
                     });
                 });
 
-                // Calculate stats
-                const totalFlights = allFlights.length;
-                const prices = allFlights.map(f => f.price);
-                const lowestPrice = Math.min(...prices);
-                const avgPrice = prices.reduce((a, b) => a + b, 0) / prices.length;
-                const uniqueDestinations = [...new Set(allFlights.map(f => f.destination))].length;
+                const avgPrice = priceCount > 0 ? totalPrice / priceCount : 0;
 
                 // Update stats
                 $('#totalFlights').text(totalFlights);
-                $('#totalDestinations').text(uniqueDestinations);
-                $('#lowestPrice').text('$' + lowestPrice.toFixed(2));
+                $('#totalDestinations').text(allResults.length);
+                $('#lowestPrice').text(lowestPrice === Infinity ? '$0' : '$' + lowestPrice.toFixed(2));
                 $('#avgPrice').text('$' + avgPrice.toFixed(2));
                 $('#statsContainer').show();
 
+                // Set price filter max
+                $('#priceRange').attr('max', Math.ceil(maxPrice));
+                $('#priceRange').val(Math.ceil(maxPrice));
+                $('#priceValue').text(Math.ceil(maxPrice));
+
                 // Update results header
-                const dateRange = response.startDate === response.endDate ? 
-                    response.startDate : 
-                    `${response.startDate} to ${response.endDate}`;
-                    
                 $('#resultsHeader').html(`
                     <i class="fas fa-plane text-success"></i> 
-                    GoWild Flights from ${response.origin_name} on ${dateRange}
+                    GoWild Flights from ${response.origin_name} (${response.dateRange})
                 `);
 
-                // Apply initial sort and filter
-                sortAndFilterFlights();
-                $('.results-container').show();
+                // Apply initial filters and display
+                applyFilters();
                 
-                // Scroll to results
+                $('.results-container').show();
                 $('html, body').animate({ scrollTop: $('.results-container').offset().top - 100 }, 500);
             }
 
-            function sortAndFilterFlights() {
-                // Apply filters
-                filteredFlights = allFlights.filter(flight => {
-                    // Price filter
-                    const minPrice = parseFloat($('#minPrice').val()) || 0;
-                    const maxPrice = parseFloat($('#maxPrice').val()) || Infinity;
-                    if (flight.price < minPrice || flight.price > maxPrice) return false;
-
-                    // Duration filter (convert duration string to hours)
-                    const maxDuration = parseFloat($('#maxDuration').val());
-                    if (maxDuration) {
-                        const durationMatch = flight.duration.match(/(\d+)h\s*(\d+)?m?/);
-                        if (durationMatch) {
-                            const hours = parseInt(durationMatch[1]) || 0;
-                            const minutes = parseInt(durationMatch[2]) || 0;
-                            const totalHours = hours + (minutes / 60);
-                            if (totalHours > maxDuration) return false;
-                        }
-                    }
-
-                    // Stops filter
-                    const stopsFilter = $('#stopsFilter').val();
-                    if (stopsFilter) {
-                        const stopsText = flight.stops.toLowerCase();
-                        if (stopsFilter === 'nonstop' && !stopsText.includes('nonstop')) return false;
-                        if (stopsFilter === '1stop' && stopsText.includes('2 stop')) return false;
-                        if (stopsFilter === '2stops' && stopsText.includes('3 stop')) return false;
-                    }
-
-                    // Destination search filter
-                    const destSearch = $('#destinationSearch').val().toLowerCase();
-                    if (destSearch) {
-                        const searchableText = `${flight.destination} ${flight.destination_name}`.toLowerCase();
-                        if (!searchableText.includes(destSearch)) return false;
-                    }
-
-                    return true;
-                });
-
-                // Apply sorting
-                filteredFlights.sort((a, b) => {
-                    switch (currentSort) {
-                        case 'price-asc':
-                            return a.price - b.price;
-                        case 'price-desc':
-                            return b.price - a.price;
-                        case 'duration-asc':
-                            return parseDuration(a.duration) - parseDuration(b.duration);
-                        case 'departure-asc':
-                            return parseTime(a.departure_time) - parseTime(b.departure_time);
-                        case 'destination':
-                            return a.destination.localeCompare(b.destination);
-                        default:
-                            return 0;
-                    }
-                });
-
-                // Update results summary
-                $('#visibleResults').text(filteredFlights.length);
-                $('#totalResults').text(allFlights.length);
-                $('#resultsSummary').show();
-
-                // Render filtered results
-                renderFlights();
-            }
-
-            function renderFlights() {
-                if (filteredFlights.length === 0) {
-                    $('#flightResults').html(`
-                        <div class="search-card text-center">
-                            <i class="fas fa-filter fa-3x text-muted mb-3"></i>
-                            <h4>No flights match your filters</h4>
-                            <p class="text-muted">Try adjusting your filter criteria.</p>
-                        </div>
-                    `);
+            function applyFilters() {
+                if (allResults.length === 0) {
+                    console.log('No results to filter');
                     return;
                 }
 
-                // Group flights by destination
-                const groupedFlights = {};
-                filteredFlights.forEach(flight => {
-                    const key = flight.destination;
-                    if (!groupedFlights[key]) {
-                        groupedFlights[key] = {
-                            destination: flight.destination,
-                            destination_name: flight.destination_name,
-                            flights: []
-                        };
+                const sortBy = $('.filter-btn.active').data('sort');
+                const maxPrice = parseFloat($('#priceRange').val());
+                const maxStops = $('.stops-btn.active').data('stops');
+                const searchTerm = $('#destinationSearch').val().toLowerCase();
+                
+                console.log('Applying filters:', {sortBy, maxPrice, maxStops, searchTerm});
+
+                // Filter results
+                let filteredResults = allResults.filter(result => {
+                    // Filter by destination search
+                    if (searchTerm && 
+                        !result.destination.toLowerCase().includes(searchTerm) && 
+                        !result.destination_name.toLowerCase().includes(searchTerm)) {
+                        return false;
                     }
-                    groupedFlights[key].flights.push(flight);
+
+                    // Filter flights within each destination
+                    result.filteredFlights = result.flights.filter(flight => {
+                        const price = parseFloat(flight.price) || 0;
+                        if (price > maxPrice) return false;
+
+                        if (maxStops !== 'all') {
+                            const stops = flight.stops ? parseInt(flight.stops.match(/\\d+/)?.[0] || '0') : 0;
+                            if (stops > parseInt(maxStops)) return false;
+                        }
+
+                        return true;
+                    });
+
+                    return result.filteredFlights.length > 0;
                 });
+
+                // Sort flights within each destination
+                filteredResults.forEach(result => {
+                    result.filteredFlights.sort((a, b) => {
+                        switch (sortBy) {
+                            case 'price-asc':
+                                return (parseFloat(a.price) || 0) - (parseFloat(b.price) || 0);
+                            case 'price-desc':
+                                return (parseFloat(b.price) || 0) - (parseFloat(a.price) || 0);
+                            case 'duration-asc':
+                                return parseDuration(a.duration) - parseDuration(b.duration);
+                            case 'duration-desc':
+                                return parseDuration(b.duration) - parseDuration(a.duration);
+                            case 'stops-asc':
+                                const stopsA = a.stops ? parseInt(a.stops.match(/\\d+/)?.[0] || '0') : 0;
+                                const stopsB = b.stops ? parseInt(b.stops.match(/\\d+/)?.[0] || '0') : 0;
+                                return stopsA - stopsB;
+                            default:
+                                return 0;
+                        }
+                    });
+                });
+
+                // Sort destinations
+                if (sortBy === 'destination') {
+                    filteredResults.sort((a, b) => a.destination_name.localeCompare(b.destination_name));
+                }
+
+                renderFilteredResults(filteredResults);
+            }
+
+            function parseDuration(durationStr) {
+                // Parse duration string like "2h 30m" to minutes
+                const hours = parseInt(durationStr.match(/(\\d+)h/)?.[1] || '0');
+                const minutes = parseInt(durationStr.match(/(\\d+)m/)?.[1] || '0');
+                return hours * 60 + minutes;
+            }
+
+            function renderFilteredResults(results) {
+                let totalVisible = 0;
+                results.forEach(result => {
+                    totalVisible += result.filteredFlights.length;
+                });
+
+                $('#resultsCount').text(`Showing ${totalVisible} flight${totalVisible !== 1 ? 's' : ''} to ${results.length} destination${results.length !== 1 ? 's' : ''}`);
+
+                if (totalVisible === 0) {
+                    $('#flightResults').html('<div class="search-card text-center"><i class="fas fa-filter fa-2x text-muted mb-3"></i><h5>No flights match your filters</h5><p class="text-muted">Try adjusting your filter settings.</p></div>');
+                    return;
+                }
 
                 let resultsHtml = '';
                 
-                Object.values(groupedFlights).forEach(group => {
+                results.forEach(result => {
+                    if (result.filteredFlights.length === 0) return;
+
                     resultsHtml += `
-                        <div class="destination-header">
-                            <h4><i class="fas fa-map-marker-alt"></i> ${group.destination} (${group.destination_name})</h4>
-                            <small>${group.flights.length} GoWild flight${group.flights.length > 1 ? 's' : ''} available</small>
-                        </div>
+                        <div class="destination-section">
+                            <div class="destination-header">
+                                <h4><i class="fas fa-map-marker-alt"></i> ${result.destination} (${result.destination_name})</h4>
+                                <small>${result.filteredFlights.length} GoWild flight${result.filteredFlights.length > 1 ? 's' : ''} available</small>
+                            </div>
                     `;
 
-                    group.flights.forEach(flight => {
+                    result.filteredFlights.forEach((flight) => {
                         let layoverHtml = '';
                         if (flight.layovers && flight.layovers.length > 0) {
                             layoverHtml = '<div class="layover-info">';
@@ -870,13 +1000,11 @@
                             seatsHtml = `<div class="mt-2"><i class="fas fa-chair text-warning"></i> <strong>${flight.seats}</strong> seats available</div>`;
                         }
 
-                        const departureAirportDisplay = flight.departure_airport_name ? 
-                            `${flight.departure_airport} (${flight.departure_airport_name})` : 
-                            flight.departure_airport;
-                        
-                        const arrivalAirportDisplay = flight.arrival_airport_name ? 
-                            `${flight.arrival_airport} (${flight.arrival_airport_name})` : 
-                            flight.arrival_airport;
+                        // Enhanced airport display with full names
+                        const depAirport = flight.departure_airport || 'Unknown';
+                        const arrAirport = flight.arrival_airport || 'Unknown';
+                        const depName = getAirportName(depAirport);
+                        const arrName = getAirportName(arrAirport);
 
                         resultsHtml += `
                             <div class="flight-card">
@@ -884,54 +1012,57 @@
                                     <div class="col-md-8">
                                         <div class="flight-route">
                                             <i class="fas fa-plane-departure text-primary"></i> 
-                                            ${departureAirportDisplay} → ${arrivalAirportDisplay}
+                                            ${depAirport} (${depName}) → ${arrAirport} (${arrName})
                                         </div>
                                         <div class="flight-details">
+                                            <div><i class="fas fa-calendar-alt"></i> Date: ${result.searchDate || 'Unknown'}</div>
                                             <div><i class="fas fa-clock"></i> Departs: ${flight.departure_time} | Arrives: ${flight.arrival_time}</div>
                                             <div><i class="fas fa-hourglass-half"></i> Duration: ${flight.duration} | ${flight.stops}</div>
-                                            <div><i class="fas fa-plane"></i> Flight ${flight.flight_number}</div>
-                                            ${flight.aircraft_type ? `<div><i class="fas fa-plane"></i> Aircraft: ${flight.aircraft_type}</div>` : ''}
+                                            <div><i class="fas fa-plane"></i> Flight ${flight.flight_number || 'N/A'}</div>
                                         </div>
                                         ${layoverHtml}
                                         ${seatsHtml}
                                     </div>
                                     <div class="col-md-4 text-end">
-                                        <div class="flight-price">$${flight.price.toFixed(2)}</div>
+                                        <div class="flight-price">$${flight.price}</div>
                                         <small class="text-muted">GoWild Fare</small>
                                     </div>
                                 </div>
                             </div>
                         `;
                     });
+
+                    resultsHtml += '</div>';
                 });
 
                 $('#flightResults').html(resultsHtml);
             }
 
-            // Helper functions
-            function parseDuration(duration) {
-                const match = duration.match(/(\d+)h\s*(\d+)?m?/);
-                if (match) {
-                    const hours = parseInt(match[1]) || 0;
-                    const minutes = parseInt(match[2]) || 0;
-                    return hours * 60 + minutes;
-                }
-                return 0;
+            function resetFilters() {
+                // Reset sort to default (Price Low → High)
+                $('.filter-btn').removeClass('active');
+                $('.filter-btn[data-sort="price-asc"]').addClass('active');
+                
+                // Reset stops to Any
+                $('.stops-btn').removeClass('active');
+                $('.stops-btn[data-stops="all"]').addClass('active');
+                
+                // Reset price range to max
+                const maxPrice = $('#priceRange').attr('max');
+                $('#priceRange').val(maxPrice);
+                $('#priceValue').text(maxPrice);
+                
+                // Clear destination search
+                $('#destinationSearch').val('');
+                
+                // Apply the reset filters
+                applyFilters();
+                
+                console.log('Filters reset to defaults');
             }
 
-            function parseTime(timeStr) {
-                const match = timeStr.match(/(\d+):(\d+)\s*(AM|PM)/);
-                if (match) {
-                    let hours = parseInt(match[1]);
-                    const minutes = parseInt(match[2]);
-                    const period = match[3];
-                    
-                    if (period === 'PM' && hours !== 12) hours += 12;
-                    if (period === 'AM' && hours === 12) hours = 0;
-                    
-                    return hours * 60 + minutes;
-                }
-                return 0;
+            function getAirportName(code) {
+                return window.airportNames[code] || code;
             }
         });
     </script>

@@ -82,7 +82,7 @@ class SimpleGoWildChecker:
     def check_flight(self, origin, destination, date, quiet_mode=False):
         """Check a single route for GoWild flights"""
         if not quiet_mode:
-            print(f"Checking {origin} → {destination} ({self.airport_names.get(destination, destination)})...")
+        print(f"Checking {origin} → {destination} ({self.airport_names.get(destination, destination)})...")
         
         # Format date for URL
         date_str = date.strftime("%b-%d,-%Y").replace("-", "%20")
@@ -106,9 +106,9 @@ class SimpleGoWildChecker:
             
             if flights:
                 if not quiet_mode:
-                    print(f"  ✅ Found {len(flights)} GoWild flight(s)!")
-                    for i, flight in enumerate(flights, 1):
-                        print(f"    {i}. {flight['stops']} - ${flight['price']}")
+                print(f"  ✅ Found {len(flights)} GoWild flight(s)!")
+                for i, flight in enumerate(flights, 1):
+                    print(f"    {i}. {flight['stops']} - ${flight['price']}")
                         
                         # Show detailed leg-by-leg information
                         if 'all_legs' in flight and len(flight['all_legs']) > 1:
@@ -151,11 +151,11 @@ class SimpleGoWildChecker:
                                 aircraft_info += f" ({flight['aircraft_type']})"
                             print(f"       ✈️  {aircraft_info}")
                         
-                        if flight['seats']:
+                    if flight['seats']:
                             print(f"       💺 Seats available: {flight['seats']}")
                         
                         print()
-                    print()
+                print()
                 return flights
             else:
                 print(f"  ❌ No GoWild flights found")
@@ -516,7 +516,7 @@ def main():
     else:
         # Check single date for specific destinations
         flight_date = datetime.now() + timedelta(days=args.days)
-        checker.check_multiple_routes(args.origin.upper(), args.destinations, flight_date)
+    checker.check_multiple_routes(args.origin.upper(), args.destinations, flight_date)
 
 if __name__ == "__main__":
     main()
